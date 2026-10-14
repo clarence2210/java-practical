@@ -1,0 +1,27 @@
+program 4
+file name - SuperKeywordExample.java
+
+class Animal { 
+  Animal() { 
+    System.out.println("Animal is created"); 
+  } 
+  void eat() { 
+    System.out.println("Animal eats food"); 
+  } 
+} 
+class Dog extends Animal { 
+  Dog() { 
+    super(); 
+    System.out.println("Dog is created"); 
+  } 
+  void eat() { 
+    super.eat(); 
+    System.out.println("Dog eats bones");
+  } 
+}
+public class SuperKeywordExample { 
+  public static void main(String[] args) { 
+    Dog d = new Dog();
+     d.eat();
+  } 
+} 

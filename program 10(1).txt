@@ -1,0 +1,153 @@
+Program 10
+*index.html*
+<html>
+<body>
+
+<form action="set_cookie" method="post">
+
+Name:
+<input type="text" name="username"><br>
+
+Serial Number:
+<input type="text" name="sno"><br>
+
+Old Units:
+<input type="text" name="ounits"><br>
+
+Current Units:
+<input type="text" name="cunits"><br>
+
+<input type="submit" value="Calculate Bill">
+
+</form>
+
+</body>
+</html>
+
+*web.xml*
+
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         version="6.0">
+
+    <servlet>
+        <servlet-name>Set_cookie</servlet-name>
+        <servlet-class>Set_cookie</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Set_cookie</servlet-name>
+        <url-pattern>/set_cookie</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>Get_cookie</servlet-name>
+        <servlet-class>Get_cookie</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Get_cookie</servlet-name>
+        <url-pattern>/get_cookie</url-pattern>
+    </servlet-mapping>
+
+</web-app>
+
+Get_cookie.java
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+public class Get_cookie extends HttpServlet {
+
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
+                         throws ServletException, IOException {
+
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        Cookie[] cookies = request.getCookies();
+
+        String name = "";
+        String serial = "";
+        String units = "";
+        String bill = "";
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+
+                switch (cookie.getName()) {
+
+                    case "username":
+                        name = cookie.getValue();
+                        break;
+
+                    case "serial":
+                        serial = cookie.getValue();
+                        break;
+
+                    case "units":
+                        units = cookie.getValue();
+                        break;
+
+                    case "bill":
+                        bill = cookie.getValue();
+                        break;
+                }
+            }
+        }
+
+        out.println("<html><body>");
+        out.println("<h2>Electricity Bill Details</h2>");
+        out.println("Name: " + name + "<br>");
+        out.println("Serial No: " + serial + "<br>");
+        out.println("Units Consumed: " + units + "<br>");
+        out.println("Bill Amount: Rs. " + bill);
+        out.println("</body></html>");
+    }
+}
+
+Set_cookie.java
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+public class Set_cookie extends HttpServlet {
+
+    protected void doPost(HttpServletRequest request,
+                          HttpServletResponse response)
+                          throws ServletException, IOException {
+
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        String uname = request.getParameter("username");
+        String serial = request.getParameter("sno");
+
+        int oldUnits = Integer.parseInt(request.getParameter("ounits"));
+        int currentUnits = Integer.parseInt(request.getParameter("cunits"));
+
+        int unitsConsumed = currentUnits - oldUnits;
+        double billAmount = unitsConsumed * 5.0;
+
+        response.addCookie(new Cookie("username", uname));
+        response.addCookie(new Cookie("serial", serial));
+        response.addCookie(new Cookie("units", String.valueOf(unitsConsumed)));
+        response.addCookie(new Cookie("bill", String.valueOf(billAmount)));
+
+        out.println("<html><body>");
+        out.println("<h3>Bill Calculated and Stored in Cookies!</h3>");
+        out.println("<a href='get_cookie'>Click here to view your bill</a>");
+        out.println("</body></html>");
+    }
+}
