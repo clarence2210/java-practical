@@ -1,0 +1,147 @@
+Program11
+bmi.html
+<html>
+<body>
+
+<h2>BMI Calculator</h2>
+
+<form action="set_session" method="post">
+
+Name:
+<input type="text" name="username"><br><br>
+
+Age:
+<input type="text" name="age"><br><br>
+
+Weight (kg):
+<input type="text" name="wt"><br><br>
+
+Height (meters):
+<input type="text" name="ht"><br><br>
+
+<input type="submit" value="Calculate BMI">
+
+</form>
+
+</body>
+</html>
+
+*web.xml*
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         version="6.0">
+
+    <servlet>
+        <servlet-name>Set_session</servlet-name>
+        <servlet-class>Set_session</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Set_session</servlet-name>
+        <url-pattern>/set_session</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>Get_session</servlet-name>
+        <servlet-class>Get_session</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Get_session</servlet-name>
+        <url-pattern>/get_session</url-pattern>
+    </servlet-mapping>
+
+</web-app>
+
+Get_session.java
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+public class Get_session extends HttpServlet {
+
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
+                         throws ServletException, IOException {
+
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        HttpSession session = request.getSession(false);
+
+        out.println("<html><body>");
+
+        if (session != null) {
+
+            String name = (String) session.getAttribute("name");
+            Integer age = (Integer) session.getAttribute("age");
+            Double weight = (Double) session.getAttribute("weight");
+            Double height = (Double) session.getAttribute("height");
+            Double bmi = (Double) session.getAttribute("bmi");
+
+            if (name != null && bmi != null) {
+
+                out.println("<h2>BMI Result</h2>");
+                out.println("Name: " + name + "<br>");
+                out.println("Age: " + age + "<br>");
+                out.println("Weight: " + weight + " kg<br>");
+                out.println("Height: " + height + " m<br>");
+                out.println("BMI: " + String.format("%.2f", bmi));
+
+            } else {
+                out.println("<h3>Session data not found.</h3>");
+            }
+
+        } else {
+            out.println("<h3>No active session found.</h3>");
+        }
+
+        out.println("</body></html>");
+    }
+}
+
+Set_session.java
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+public class Set_session extends HttpServlet {
+
+    protected void doPost(HttpServletRequest request,
+                          HttpServletResponse response)
+                          throws ServletException, IOException {
+
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        String name = request.getParameter("username");
+        int age = Integer.parseInt(request.getParameter("age"));
+        double weight = Double.parseDouble(request.getParameter("wt"));
+        double height = Double.parseDouble(request.getParameter("ht"));
+
+        double bmi = weight / (height * height);
+
+        HttpSession session = request.getSession();
+
+        session.setAttribute("name", name);
+        session.setAttribute("age", age);
+        session.setAttribute("weight", weight);
+        session.setAttribute("height", height);
+        session.setAttribute("bmi", bmi);
+
+        out.println("<html><body>");
+        out.println("<h3>BMI has been calculated and stored in session.</h3>");
+        out.println("<a href='get_session'>Click here to view your BMI</a>");
+        out.println("</body></html>");
+    }
+}

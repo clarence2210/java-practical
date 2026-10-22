@@ -19,44 +19,41 @@ main{width:min(1000px,calc(100% - 32px));margin:0 auto 60px}.toolbar{display:fle
   <h1>Your files, in one place</h1>
   <p>Open a file to view it, or download a copy to your device.</p>
 </header>
+
 <main>
   <div class="toolbar">
-    <div class="count" id="count">6 files available</div>
+    <div class="count" id="count">12 files available</div>
     <input class="search" id="search" type="search" placeholder="Search files..." aria-label="Search files">
   </div>
-  <section class="grid" id="fileGrid" aria-label="Files">
-    <article class="file-card" data-name="program 12.txt">
-      <div class="file-top"><div class="file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2.8h8l4 4V21H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></div><div><div class="file-name">program 12.txt</div><div class="file-type">TEXT DOCUMENT · TXT</div></div></div>
-      <p class="file-note">Program 12 — Student marksheet example.</p><div class="actions"><a class="btn primary" href="files/program%2012.txt" target="_blank" rel="noopener">↗ Open</a><a class="btn" href="files/program%2012.txt" download>↓ Download</a></div>
-    </article>
-    <article class="file-card" data-name="program 4(1).txt">
-      <div class="file-top"><div class="file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2.8h8l4 4V21H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></div><div><div class="file-name">program 4(1).txt</div><div class="file-type">TEXT DOCUMENT · TXT</div></div></div>
-      <p class="file-note">Program 4 — Java super keyword example.</p><div class="actions"><a class="btn primary" href="files/program%204%281%29.txt" target="_blank" rel="noopener">↗ Open</a><a class="btn" href="files/program%204%281%29.txt" download>↓ Download</a></div>
-    </article>
-    <article class="file-card" data-name="program 5(1).txt">
-      <div class="file-top"><div class="file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2.8h8l4 4V21H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></div><div><div class="file-name">program 5(1).txt</div><div class="file-type">TEXT DOCUMENT · TXT</div></div></div>
-      <p class="file-note">Program 5 — Java abstract class example.</p><div class="actions"><a class="btn primary" href="files/program%205%281%29.txt" target="_blank" rel="noopener">↗ Open</a><a class="btn" href="files/program%205%281%29.txt" download>↓ Download</a></div>
-    </article>
-    <article class="file-card" data-name="program 8(1).txt">
-      <div class="file-top"><div class="file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2.8h8l4 4V21H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></div><div><div class="file-name">program 8(1).txt</div><div class="file-type">TEXT DOCUMENT · TXT</div></div></div>
-      <p class="file-note">Program 8 — Java string operations example.</p><div class="actions"><a class="btn primary" href="files/program%208%281%29.txt" target="_blank" rel="noopener">↗ Open</a><a class="btn" href="files/program%208%281%29.txt" download>↓ Download</a></div>
-    </article>
-    <article class="file-card" data-name="program 10(1).txt">
-      <div class="file-top"><div class="file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2.8h8l4 4V21H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></div><div><div class="file-name">program 10(1).txt</div><div class="file-type">TEXT DOCUMENT · TXT</div></div></div>
-      <p class="file-note">Program 10 — Electricity bill using cookies.</p><div class="actions"><a class="btn primary" href="files/program%2010%281%29.txt" target="_blank" rel="noopener">↗ Open</a><a class="btn" href="files/program%2010%281%29.txt" download>↓ Download</a></div>
-    </article>
-    <article class="file-card" data-name="program 11(1).txt">
-      <div class="file-top"><div class="file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2.8h8l4 4V21H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></div><div><div class="file-name">program 11(1).txt</div><div class="file-type">TEXT DOCUMENT · TXT</div></div></div>
-      <p class="file-note">Program 11 — BMI calculator using session.</p><div class="actions"><a class="btn primary" href="files/program%2011%281%29.txt" target="_blank" rel="noopener">↗ Open</a><a class="btn" href="files/program%2011%281%29.txt" download>↓ Download</a></div>
-    </article>
-  </section>
+  <section class="grid" id="fileGrid" aria-label="Files"></section>
   <div class="empty" id="empty">No matching files found.</div>
 </main>
-<div class="footer">Simple file library · Open files in a new tab or download them</div>
+<div class="footer">Your updated program files · Open or download any file</div>
 <script>
-const search=document.getElementById('search'), cards=[...document.querySelectorAll('.file-card')], count=document.getElementById('count'), empty=document.getElementById('empty');
-function filterFiles(){const q=search.value.trim().toLowerCase();let visible=0;cards.forEach(card=>{const show=card.dataset.name.toLowerCase().includes(q);card.style.display=show?'flex':'none';if(show)visible++});count.textContent=visible+' file'+(visible===1?'':'s')+' available';empty.style.display=visible?'none':'block'}
-search.addEventListener('input',filterFiles);
+const files = ["program 1(2).txt", "program 2(2).txt", "program 3(2).txt", "program 4(4).txt", "program 5(4).txt", "program 6(2).txt", "program 7(2).txt", "program 8(2).txt", "program 9(2).txt", "program 10(2).txt", "program 11(2).txt", "program 12(3).txt"];
+const grid = document.getElementById('fileGrid');
+const search = document.getElementById('search');
+const count = document.getElementById('count');
+const empty = document.getElementById('empty');
+function render() {
+  const query = search.value.trim().toLowerCase();
+  const visible = files.filter(name => name.toLowerCase().includes(query));
+  count.textContent = `${visible.length} of ${files.length} files available`;
+  empty.style.display = visible.length ? 'none' : 'block';
+  grid.innerHTML = visible.map(name => {
+    const url = 'files/' + encodeURIComponent(name).replaceAll('%2F','/');
+    return `<article class="file-card">
+      <div class="file-top">
+        <div class="file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2.8h8l4 4V21H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></div>
+        <div><div class="file-name">${name}</div><div class="file-type">TEXT DOCUMENT · TXT</div></div>
+      </div>
+      <p class="file-note">Open this program file in your browser or save it to your device.</p>
+      <div class="actions"><a class="btn primary" href="${url}" target="_blank" rel="noopener">↗ Open</a><a class="btn" href="${url}" download>↓ Download</a></div>
+    </article>`;
+  }).join('');
+}
+search.addEventListener('input', render);
+render();
 </script>
 </body>
 </html>

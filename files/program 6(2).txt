@@ -1,0 +1,192 @@
+Execute the following SQL commands in MySQL.
+CREATE DATABASE studentdb;
+
+USE studentdb;
+
+CREATE TABLE students (
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    department VARCHAR(50),
+    marks DOUBLE
+);
+
+
+Java program
+Before running the program, add the MySQL Connector/J JAR file to your project's build path.
+
+StudentInfoSystem.java
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+
+public class StudentInfoSystem extends Frame
+        implements ActionListener {
+
+    Label l1, l2, l3, l4, status;
+    TextField t1, t2, t3, t4;
+    Button insert, view, update, delete, clear;
+
+    Connection con;
+    PreparedStatement ps;
+    ResultSet rs;
+
+    StudentInfoSystem() {
+        setTitle("Student Information System");
+        setSize(450, 350);
+        setLayout(new GridLayout(7, 2, 5, 5));
+
+        l1 = new Label("Student ID:");
+        l2 = new Label("Student Name:");
+        l3 = new Label("Department:");
+        l4 = new Label("Marks:");
+
+        t1 = new TextField();
+        t2 = new TextField();
+        t3 = new TextField();
+        t4 = new TextField();
+
+        insert = new Button("Insert");
+        view = new Button("View");
+        update = new Button("Update");
+        delete = new Button("Delete");
+        clear = new Button("Clear");
+
+        status = new Label("Enter student details");
+
+        add(l1); add(t1);
+        add(l2); add(t2);
+        add(l3); add(t3);
+        add(l4); add(t4);
+
+        add(insert); add(view);
+        add(update); add(delete);
+        add(clear); add(status);
+
+        insert.addActionListener(this);
+        view.addActionListener(this);
+        update.addActionListener(this);
+        delete.addActionListener(this);
+        clear.addActionListener(this);
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/studentdb",
+                "root",
+                "your_password"
+            );
+            status.setText("Database connected");
+        } catch (Exception e) {
+            status.setText("Database connection failed");
+            e.printStackTrace();
+        }
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                try {
+                    if (con != null) con.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                dispose();
+            }
+        });
+
+        setVisible(true);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (con == null) {
+            status.setText("No database connection");
+            return;
+        }
+
+        try {
+            int id;
+            switch (e.getActionCommand()) {
+
+                case "Insert":
+                    id = Integer.parseInt(t1.getText());
+                    ps = con.prepareStatement(
+                        "INSERT INTO students VALUES (?, ?, ?, ?)"
+                    );
+                    ps.setInt(1, id);
+                    ps.setString(2, t2.getText());
+                    ps.setString(3, t3.getText());
+                    ps.setDouble(4,
+                        Double.parseDouble(t4.getText()));
+
+                    ps.executeUpdate();
+                    status.setText("Student inserted");
+                    break;
+
+                case "View":
+                    id = Integer.parseInt(t1.getText());
+                    ps = con.prepareStatement(
+                        "SELECT * FROM students WHERE id = ?"
+                    );
+                    ps.setInt(1, id);
+                    rs = ps.executeQuery();
+
+                    if (rs.next()) {
+                        t2.setText(rs.getString("name"));
+                        t3.setText(rs.getString("department"));
+                        t4.setText(
+                            String.valueOf(rs.getDouble("marks")));
+                        status.setText("Student found");
+                    } else {
+                        status.setText("Student not found");
+                    }
+                    break;
+
+                case "Update":
+                    id = Integer.parseInt(t1.getText());
+                    ps = con.prepareStatement(
+                        "UPDATE students SET name=?, department=?, "
+                        + "marks=? WHERE id=?"
+                    );
+                    ps.setString(1, t2.getText());
+                    ps.setString(2, t3.getText());
+                    ps.setDouble(3,
+                        Double.parseDouble(t4.getText()));
+                    ps.setInt(4, id);
+
+                    int updated = ps.executeUpdate();
+                    status.setText(updated > 0
+                        ? "Student updated" : "Student not found");
+                    break;
+
+                case "Delete":
+                    id = Integer.parseInt(t1.getText());
+                    ps = con.prepareStatement(
+                        "DELETE FROM students WHERE id=?"
+                    );
+                    ps.setInt(1, id);
+
+                    int deleted = ps.executeUpdate();
+                    status.setText(deleted > 0
+                        ? "Student deleted" : "Student not found");
+                    break;
+
+                case "Clear":
+                    t1.setText("");
+                    t2.setText("");
+                    t3.setText("");
+                    t4.setText("");
+                    status.setText("Fields cleared");
+                    break;
+            }
+
+        } catch (NumberFormatException ex) {
+            status.setText("Enter valid ID and marks");
+        } catch (SQLException ex) {
+            status.setText("Database operation failed");
+            ex.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        new StudentInfoSystem();
+    }
+}
+
